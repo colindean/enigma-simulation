@@ -46,7 +46,7 @@ trait MapUtilities {
 }
 
 object AtoZ {
-  def seq = ('A' to 'Z').toSeq
+  val seq = ('A' to 'Z').toSeq
   def shuffled = Random.shuffle(seq)
 }
 case class LetterMap(map: Map[Char, Char] = Map.empty)
@@ -54,7 +54,18 @@ case class LetterMap(map: Map[Char, Char] = Map.empty)
 class Plugboard(map: Map[Char, Char]) extends LetterMap(map)
 class Reflector(map: Map[Char, Char]) extends LetterMap(map)
 class Rotor(map: Map[Char, Char]) extends LetterMap(map) {
-  def rotate: Rotor = ???
+  def rotate: Rotor = {
+    val newMap = map.map { case(k: Char, v: Char) =>
+      val last = AtoZ.seq.last
+      val newKey = k match {
+        case x if x.equals(last) => AtoZ.seq.head
+        case _ => AtoZ.seq(AtoZ.seq.indexOf(k)+1)
+      }
+      newKey -> v
+    }
+
+    new Rotor(newMap)
+  }
 }
 
 object Plugboard extends MapUtilities {
@@ -73,6 +84,6 @@ object Reflector extends MapUtilities {
 
 object Rotor extends MapUtilities {
   def apply() = {
-     new Rotor(AtoZ.seq.zip(AtoZ.shuffled).toMap)
+    new Rotor(AtoZ.seq.zip(AtoZ.shuffled).toMap)
   }
 }
