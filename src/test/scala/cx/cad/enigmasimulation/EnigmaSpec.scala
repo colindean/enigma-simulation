@@ -7,11 +7,11 @@ class EnigmaSpec extends FunSpec with ShouldMatchers {
   val text = "IHAVETAKENMOREOUTOFALCOHOLTHANALCOHOLHASTAKENOUTOFME"
   describe("Enigma") {
     it("decrypt what was encrypted") {
-      val engima = new Enigma(Plugboard(), Reflector(), Seq(Rotor(), Rotor(), Rotor()))
+      val enigma = new Enigma(Plugboard(), Reflector(), Seq(Rotor(), Rotor(), Rotor()))
+      
+      val crypted = enigma.crypt(text)
 
-      val crypted = engima.crypt(text)
-
-      val decrypted = engima.crypt(crypted)
+      val decrypted = enigma.crypt(crypted)
 
       decrypted should equal(text)
     }

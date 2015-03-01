@@ -3,11 +3,21 @@ package cx.cad.enigmasimulation
 import scala.util.Random
 
 class Enigma(plugboard: Plugboard, reflector: Reflector, var rotors: Seq[Rotor]) {
+
+  override def toString = {
+    s"""An Enigma with
+       |Plugboard: $plugboard
+       |Reflector: $reflector
+       |Rotors:
+       |    ${rotors.map(_.toString)}
+     """.stripMargin
+  }
+
   def crypt(text: String): String = {
     text.zipWithIndex.map( tuple => cryptChar(tuple._1, tuple._2)).mkString
   }
 
-  def cryptChar(char: Char, index: Int): Char = {
+  private def cryptChar(char: Char, index: Int): Char = {
     rotateRotors(index)
     
     var cryptedChar = plugboard.map(char)
@@ -23,7 +33,7 @@ class Enigma(plugboard: Plugboard, reflector: Reflector, var rotors: Seq[Rotor])
     cryptedChar
   }
 
-  def rotateRotors(index: Int) = {
+  private def rotateRotors(index: Int) = {
 
     def rotateWhenAtAppropriateIndex(rotor: Rotor, index: Int): Rotor = {
       if (index % Math.pow(25, index) == 0) {
@@ -51,7 +61,15 @@ object AtoZ {
 }
 case class LetterMap(map: Map[Char, Char] = Map.empty)
 
-class Plugboard(map: Map[Char, Char]) extends LetterMap(map)
+class Plugboard(mapping: Map[Char, Char]) extends LetterMap(mapping) {
+  def map(char: Char): Char = {
+    if(mapping.contains(char)){
+      mapping(char)
+    } else {
+      char
+    }
+  }
+}
 class Reflector(map: Map[Char, Char]) extends LetterMap(map)
 class Rotor(map: Map[Char, Char]) extends LetterMap(map) {
   def rotate: Rotor = {
