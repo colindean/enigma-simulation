@@ -58,7 +58,7 @@ object CharMapTypeContainer {
 
 trait MapUtilities {
   def listToMapByPairs(s: Seq[Char]): CharMap = s.grouped(2).map(s => s(0) -> s(1)).toMap
-  def reverseMap[A](map: CharMap): CharMap = map.map(_.swap)
+  def reverseMap(map: CharMap): CharMap = map.map(_.swap)
 }
 
 object AtoZ {
