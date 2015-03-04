@@ -57,7 +57,7 @@ object CharMapTypeContainer {
   type CharMap = Map[Char, Char]
 }
 
-trait MapUtilities {
+trait MappingUtilities {
   def seqToMapByPairs(s: Seq[Char]): CharMap = s.grouped(2).map(s => s(0) -> s(1)).toMap
   def reverseMap(map: CharMap): CharMap = map.map(_.swap)
 
@@ -66,12 +66,13 @@ trait MapUtilities {
     val initialMap = seqToMapByPairs(alphabet)
     initialMap ++ reverseMap(initialMap)
   }
+
+  def shuffle(alphabet: Alphabet): Alphabet = Random.shuffle(alphabet)
 }
 
 object Alphabet {
   type Alphabet = Seq[Char]
   val English = ('A' to 'Z').toSeq
-  def shuffled = Random.shuffle(English)
 
   def nextLetter(letter: Char): Char = nextLetter(letter, Alphabet.English)
   def nextLetter(letter: Char, alphabet: Alphabet): Char = {
@@ -98,22 +99,22 @@ class Rotor(mapping: CharMap) extends LetterMap(mapping) {
   }
 }
 
-object Plugboard extends MapUtilities {
+object Plugboard extends MappingUtilities {
   def apply() = {
-    val initialSeq = Alphabet.shuffled.take(20)
+    val initialSeq = shuffle(Alphabet.English).take(20)
     new Plugboard(groupByTwoAndMergeReverse(initialSeq))
   }
 }
 
-object Reflector extends MapUtilities {
+object Reflector extends MappingUtilities {
   def apply() = {
-    val initialSeq = Alphabet.shuffled
+    val initialSeq = shuffle(Alphabet.English)
     new Reflector(groupByTwoAndMergeReverse(initialSeq))
   }
 }
 
-object Rotor extends MapUtilities {
+object Rotor extends MappingUtilities {
   def apply() = {
-    new Rotor(Alphabet.English.zip(Alphabet.shuffled).toMap)
+    new Rotor(Alphabet.English.zip(shuffle(Alphabet.English)).toMap)
   }
 }
