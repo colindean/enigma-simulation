@@ -1,5 +1,6 @@
 package cx.cad.enigmasimulation
 
+import cx.cad.enigmasimulation.Alphabet.Alphabet
 import cx.cad.enigmasimulation.CharMapTypeContainer.CharMap
 
 import scala.util.Random
@@ -57,8 +58,14 @@ object CharMapTypeContainer {
 }
 
 trait MapUtilities {
-  def listToMapByPairs(s: Seq[Char]): CharMap = s.grouped(2).map(s => s(0) -> s(1)).toMap
+  def seqToMapByPairs(s: Seq[Char]): CharMap = s.grouped(2).map(s => s(0) -> s(1)).toMap
   def reverseMap(map: CharMap): CharMap = map.map(_.swap)
+
+  // TODO: rename this to something better
+  def groupByTwoAndMergeReverse(alphabet: Alphabet): CharMap = {
+    val initialMap = seqToMapByPairs(alphabet)
+    initialMap ++ reverseMap(initialMap)
+  }
 }
 
 object Alphabet {
@@ -93,15 +100,15 @@ class Rotor(mapping: CharMap) extends LetterMap(mapping) {
 
 object Plugboard extends MapUtilities {
   def apply() = {
-    val initialMap = listToMapByPairs(Alphabet.shuffled.take(20))
-    new Plugboard(initialMap ++ reverseMap(initialMap))
+    val initialSeq = Alphabet.shuffled.take(20)
+    new Plugboard(groupByTwoAndMergeReverse(initialSeq))
   }
 }
 
 object Reflector extends MapUtilities {
   def apply() = {
-    val initialMap = listToMapByPairs(Alphabet.shuffled)
-    new Reflector(initialMap ++ reverseMap(initialMap))
+    val initialSeq = Alphabet.shuffled
+    new Reflector(groupByTwoAndMergeReverse(initialSeq))
   }
 }
 
