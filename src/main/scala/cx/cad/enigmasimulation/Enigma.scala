@@ -64,6 +64,16 @@ trait MapUtilities {
 object AtoZ {
   val seq = ('A' to 'Z').toSeq
   def shuffled = Random.shuffle(seq)
+
+  def nextLetter(letter: Char): Char = nextLetter(letter, AtoZ.seq)
+  def nextLetter(letter: Char, alphabet: Seq[Char]): Char = {
+    if(letter.equals(alphabet.last)){
+      alphabet.head
+    } else {
+      alphabet(alphabet.indexOf(letter) + 1)
+    }
+  }
+
 }
 case class LetterMap(mapping: CharMap = Map.empty) {
   def map(char: Char): Char = mapping(char)
@@ -75,15 +85,7 @@ class Plugboard(mapping: CharMap) extends LetterMap(mapping) {
 class Reflector(mapping: CharMap) extends LetterMap(mapping)
 class Rotor(mapping: CharMap) extends LetterMap(mapping) {
   def rotate: Rotor = {
-    val newMap = mapping.map { case(k: Char, v: Char) =>
-      val last = AtoZ.seq.last
-      val newKey = k match {
-        case x if x.equals(last) => AtoZ.seq.head
-        case _ => AtoZ.seq(AtoZ.seq.indexOf(k)+1)
-      }
-      newKey -> v
-    }
-
+    val newMap = mapping.map { case(k, v) => AtoZ.nextLetter(k) -> v}
     new Rotor(newMap)
   }
 }
