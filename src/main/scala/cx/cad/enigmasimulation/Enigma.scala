@@ -17,7 +17,7 @@ class Enigma(plugboard: Plugboard, reflector: Reflector, var rotors: Seq[Rotor])
   }
 
   def crypt(text: String): String = {
-    text.zipWithIndex.map( tuple => cryptChar(tuple._1, tuple._2)).mkString
+    text.zipWithIndex.map{ case(letter, index) => cryptChar(letter, index) }.mkString
   }
 
   private def cryptChar(char: Char, index: Int): Char = {
