@@ -70,13 +70,7 @@ case class LetterMap(mapping: CharMap = Map.empty) {
 }
 
 class Plugboard(mapping: CharMap) extends LetterMap(mapping) {
-  override def map(char: Char): Char = {
-    if(mapping.contains(char)){
-      mapping(char)
-    } else {
-      char
-    }
-  }
+  override def map(char: Char): Char = mapping.getOrElse(char, char)
 }
 class Reflector(mapping: CharMap) extends LetterMap(mapping)
 class Rotor(mapping: CharMap) extends LetterMap(mapping) {
