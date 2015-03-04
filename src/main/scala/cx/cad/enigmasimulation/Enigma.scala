@@ -61,12 +61,13 @@ trait MapUtilities {
   def reverseMap(map: CharMap): CharMap = map.map(_.swap)
 }
 
-object AtoZ {
-  val seq = ('A' to 'Z').toSeq
-  def shuffled = Random.shuffle(seq)
+object Alphabet {
+  type Alphabet = Seq[Char]
+  val English = ('A' to 'Z').toSeq
+  def shuffled = Random.shuffle(English)
 
-  def nextLetter(letter: Char): Char = nextLetter(letter, AtoZ.seq)
-  def nextLetter(letter: Char, alphabet: Seq[Char]): Char = {
+  def nextLetter(letter: Char): Char = nextLetter(letter, Alphabet.English)
+  def nextLetter(letter: Char, alphabet: Alphabet): Char = {
     if(letter.equals(alphabet.last)){
       alphabet.head
     } else {
@@ -85,27 +86,27 @@ class Plugboard(mapping: CharMap) extends LetterMap(mapping) {
 class Reflector(mapping: CharMap) extends LetterMap(mapping)
 class Rotor(mapping: CharMap) extends LetterMap(mapping) {
   def rotate: Rotor = {
-    val newMap = mapping.map { case(k, v) => AtoZ.nextLetter(k) -> v}
+    val newMap = mapping.map { case(k, v) => Alphabet.nextLetter(k) -> v}
     new Rotor(newMap)
   }
 }
 
 object Plugboard extends MapUtilities {
   def apply() = {
-    val initialMap = listToMapByPairs(AtoZ.shuffled.take(20))
+    val initialMap = listToMapByPairs(Alphabet.shuffled.take(20))
     new Plugboard(initialMap ++ reverseMap(initialMap))
   }
 }
 
 object Reflector extends MapUtilities {
   def apply() = {
-    val initialMap = listToMapByPairs(AtoZ.shuffled)
+    val initialMap = listToMapByPairs(Alphabet.shuffled)
     new Reflector(initialMap ++ reverseMap(initialMap))
   }
 }
 
 object Rotor extends MapUtilities {
   def apply() = {
-    new Rotor(AtoZ.seq.zip(AtoZ.shuffled).toMap)
+    new Rotor(Alphabet.English.zip(Alphabet.shuffled).toMap)
   }
 }
