@@ -10,7 +10,7 @@ class RotorSpec extends FunSpec with ShouldMatchers {
 
       val rotor = new Rotor(initial)
       val nextRotation = rotor.rotate
-      nextRotation.map shouldEqual Map('B' -> 'Z')
+      nextRotation.mapping shouldEqual Map('B' -> 'Z')
     }
 
     it("should wrap") {
@@ -18,7 +18,7 @@ class RotorSpec extends FunSpec with ShouldMatchers {
 
       val rotor = new Rotor(initial)
       val nextRotation = rotor.rotate
-      nextRotation.map shouldEqual Map('A' -> 'B')
+      nextRotation.mapping shouldEqual Map('A' -> 'B')
     }
   }
 }

@@ -1,5 +1,7 @@
 package cx.cad.enigmasimulation
 
+import cx.cad.enigmasimulation.CharMapTypeContainer.CharMap
+
 import scala.util.Random
 
 class Enigma(plugboard: Plugboard, reflector: Reflector, var rotors: Seq[Rotor]) {
@@ -50,19 +52,25 @@ class Enigma(plugboard: Plugboard, reflector: Reflector, var rotors: Seq[Rotor])
   }
 }
 
+object CharMapTypeContainer {
+  type CharMap = Map[Char, Char]
+}
+
 trait MapUtilities {
-  def listToMapByPairs(s: Seq[Char]): Map[Char,Char] = s.grouped(2).map(s => s(0) -> s(1)).toMap
-  def reverseMap[A](map: Map[A,A]) = map.map(_.swap)
+  def listToMapByPairs(s: Seq[Char]): CharMap = s.grouped(2).map(s => s(0) -> s(1)).toMap
+  def reverseMap[A](map: CharMap): CharMap = map.map(_.swap)
 }
 
 object AtoZ {
   val seq = ('A' to 'Z').toSeq
   def shuffled = Random.shuffle(seq)
 }
-case class LetterMap(map: Map[Char, Char] = Map.empty)
+case class LetterMap(mapping: CharMap = Map.empty) {
+  def map(char: Char): Char = mapping(char)
+}
 
-class Plugboard(mapping: Map[Char, Char]) extends LetterMap(mapping) {
-  def map(char: Char): Char = {
+class Plugboard(mapping: CharMap) extends LetterMap(mapping) {
+  override def map(char: Char): Char = {
     if(mapping.contains(char)){
       mapping(char)
     } else {
@@ -70,10 +78,10 @@ class Plugboard(mapping: Map[Char, Char]) extends LetterMap(mapping) {
     }
   }
 }
-class Reflector(map: Map[Char, Char]) extends LetterMap(map)
-class Rotor(map: Map[Char, Char]) extends LetterMap(map) {
+class Reflector(mapping: CharMap) extends LetterMap(mapping)
+class Rotor(mapping: CharMap) extends LetterMap(mapping) {
   def rotate: Rotor = {
-    val newMap = map.map { case(k: Char, v: Char) =>
+    val newMap = mapping.map { case(k: Char, v: Char) =>
       val last = AtoZ.seq.last
       val newKey = k match {
         case x if x.equals(last) => AtoZ.seq.head
