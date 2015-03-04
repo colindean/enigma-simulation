@@ -8,7 +8,7 @@ object Main {
         System.exit(1)
       }
 
-      val enigma = new Enigma(Plugboard(), Reflector(), Seq(Rotor(), Rotor(), Rotor()))
+      val enigma = new Enigma(Plugboard.random, Reflector.random, Seq(Rotor.random, Rotor.random, Rotor.random))
 
       val originalInput = args(0)
       val cleanInput = originalInput.toUpperCase.replace(" ", "")

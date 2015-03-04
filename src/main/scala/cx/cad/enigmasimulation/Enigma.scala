@@ -73,8 +73,9 @@ trait MappingUtilities {
 object Alphabet {
   type Alphabet = Seq[Char]
   val English = ('A' to 'Z').toSeq
+  val Default = English
 
-  def nextLetter(letter: Char): Char = nextLetter(letter, Alphabet.English)
+  def nextLetter(letter: Char): Char = nextLetter(letter, Alphabet.Default)
   def nextLetter(letter: Char, alphabet: Alphabet): Char = {
     if(letter.equals(alphabet.last)){
       alphabet.head
@@ -94,27 +95,29 @@ class Plugboard(mapping: CharMap) extends LetterMap(mapping) {
 class Reflector(mapping: CharMap) extends LetterMap(mapping)
 class Rotor(mapping: CharMap) extends LetterMap(mapping) {
   def rotate: Rotor = {
+    // XXX: next letter here is going to always use default, and the rotor doesn't know its alphabet
     val newMap = mapping.map { case(k, v) => Alphabet.nextLetter(k) -> v}
     new Rotor(newMap)
   }
 }
 
 object Plugboard extends MappingUtilities {
-  def apply() = {
-    val initialSeq = shuffle(Alphabet.English).take(20)
+  def random: Plugboard = random(Alphabet.Default)
+  def random(alphabet: Alphabet): Plugboard = {
+    val initialSeq = shuffle(alphabet).take(20)
     new Plugboard(groupByTwoAndMergeReverse(initialSeq))
   }
 }
 
 object Reflector extends MappingUtilities {
-  def apply() = {
-    val initialSeq = shuffle(Alphabet.English)
+  def random: Reflector = random(Alphabet.Default)
+  def random(alphabet: Alphabet): Reflector = {
+    val initialSeq = shuffle(alphabet)
     new Reflector(groupByTwoAndMergeReverse(initialSeq))
   }
 }
 
 object Rotor extends MappingUtilities {
-  def apply() = {
-    new Rotor(Alphabet.English.zip(shuffle(Alphabet.English)).toMap)
-  }
+  def random: Rotor = random(Alphabet.Default)
+  def random(alphabet: Alphabet): Rotor = new Rotor(alphabet.zip(shuffle(alphabet)).toMap)
 }
