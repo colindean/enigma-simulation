@@ -1,6 +1,8 @@
 Enigma
 ======
 
+[![Build Status](https://travis-ci.org/colindean/enigma-simulation.svg?branch=master)](https://travis-ci.org/colindean/enigma-simulation)
+
 This project implements the Enigma encryption system used by the Germans during
 World War 2.
 
